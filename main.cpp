@@ -1,6 +1,6 @@
 #include "point.h"
-#include <ctime> // for time()
-#include <iostream>
+#include "quadtree/quadtree.h"
+#include <ctime>
 #include <raylib.h>
 #include <vector>
 #include <ctime>    // for time()
