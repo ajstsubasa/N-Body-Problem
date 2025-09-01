@@ -1,4 +1,5 @@
-#include<cstdint>
+#include <cstdint>
+
 struct Body {
     public:
         double x;
@@ -7,6 +8,7 @@ struct Body {
         double center_of_mass;
 
     Body(double x , double y , double radius, double center_of_mass){
+
 
         this->x = x;
         this->y = y;
@@ -20,3 +22,4 @@ struct Body {
     
 
 };
+

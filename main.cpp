@@ -1,6 +1,7 @@
+#include "point.h"
+#include <ctime> // for time()
 #include <iostream>
 #include <raylib.h>
-#include"point.h"
 #include <vector>
 #include <ctime>    // for time()
 #include<math.h>
@@ -13,14 +14,12 @@
 
 using namespace std;
 
-int main () {
+int main() {
 
     const int SCREEN_WIDTH = 1800;
     const int SCREEN_HEIGHT = 1200;
     const int N =10000;
     const float G = 6.67430e-1f; // scaled gravitational constant
-
-
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "N-Body Problem");
     SetTargetFPS(60);
@@ -39,7 +38,7 @@ int main () {
 
     // Start timer
 
-    //#define RUNN_BRUCE_FORCE_METHOD
+    #define RUN_BRUTE_FORCE_METHOD
     #ifdef RUN_BRUTE_FORCE_METHOD
     auto start = chrono::high_resolution_clock::now();
 
@@ -77,10 +76,9 @@ int main () {
     while (WindowShouldClose() == false){
    
    
-        
         BeginDrawing();
-            ClearBackground(BLACK);
-            for (const Body &b : bodies) {
+        ClearBackground(BLACK);
+        for (const Body &b : bodies) {
             DrawCircle((int)b.x, (int)b.y, b.radius, WHITE);
         }
         EndDrawing();
