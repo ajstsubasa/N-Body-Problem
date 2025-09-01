@@ -38,7 +38,7 @@ int main() {
 
     // Start timer
 
-    #define RUN_BRUTE_FORCE_METHOD
+    //#define RUN_BRUTE_FORCE_METHOD
     #ifdef RUN_BRUTE_FORCE_METHOD
     auto start = chrono::high_resolution_clock::now();
 
