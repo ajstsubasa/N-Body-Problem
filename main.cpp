@@ -11,6 +11,7 @@
 
 //BRUTE FORCE 50 seconds for 50,000 bodies 
 
+#include "quadtree/quadtree.h"
 
 using namespace std;
 
