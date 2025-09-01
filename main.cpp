@@ -3,6 +3,7 @@
 #include <iostream>
 #include <raylib.h>
 #include <vector>
+#include "quadtree/quadtree.h"
 
 using namespace std;
 
