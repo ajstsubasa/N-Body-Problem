@@ -2,66 +2,26 @@
 
 #include "vector2.h"
 
-namespace quadtree
-{
+namespace quadtree {
 
-template<typename T>
-class Box
-{
-public:
-    T left;
-    T top;
-    T width; // Must be positive
-    T height; // Must be positive
+template <typename T> class Box {
+  public:
+    PVector<T> topLeft;
+    PVector<T> bottomRight;
 
-    constexpr Box(T Left = 0, T Top = 0, T Width = 0, T Height = 0) noexcept :
-        left(Left), top(Top), width(Width), height(Height)
-    {
+    bool contains(const PVector<T> &p) const { return (p.x >= topLeft.x && p.x < bottomRight.x && p.y >= topLeft.y && p.y < bottomRight.y); }
 
-    }
+    std::array<Box<T>, 4> subdivide() const {
+        const T mx = (topLeft.x + bottomRight.x) / 2;
+        const T my = (topLeft.y + bottomRight.y) / 2;
 
-    constexpr Box(const Vector2<T>& position, const Vector2<T>& size) noexcept :
-        left(position.x), top(position.y), width(size.x), height(size.y)
-    {
-
-    }
-
-    constexpr T getRight() const noexcept
-    {
-        return left + width;
-    }
-
-    constexpr T getBottom() const noexcept
-    {
-        return top + height;
-    }
-
-    constexpr Vector2<T> getTopLeft() const noexcept
-    {
-        return Vector2<T>(left, top);
-    }
-
-    constexpr Vector2<T> getCenter() const noexcept
-    {
-        return Vector2<T>(left + width / 2, top + height / 2);
-    }
-
-    constexpr Vector2<T> getSize() const noexcept
-    {
-        return Vector2<T>(width, height);
-    }
-
-    constexpr bool contains(const Box<T>& box) const noexcept
-    {
-        return left <= box.left && box.getRight() <= getRight() &&
-            top <= box.top && box.getBottom() <= getBottom();
-    }
-
-    constexpr bool intersects(const Box<T>& box) const noexcept
-    {
-        return !(left >= box.getRight() || getRight() <= box.left ||
-            top >= box.getBottom() || getBottom() <= box.top);
+        return {
+            Box<T>{{topLeft.x, topLeft.y}, {mx, my}},        // TL: [lx,mx) x [ty,my)
+            Box<T>{{mx, topLeft.y}, {bottomRight.x, my}},    // TR: [mx,rx) x [ty,my)
+            Box<T>{{topLeft.x, my}, {mx, bottomRight.y}},    // BL: [lx,mx) x [my,by)
+            Box<T>{{mx, my}, {bottomRight.x, bottomRight.y}} // BR: [mx,rx) x [my,by)
+        };
     }
 };
 
-}
+} // namespace quadtree
