@@ -18,7 +18,7 @@ using namespace std;
 
 const int SCREEN_WIDTH = 1800;
 const int SCREEN_HEIGHT = 1200;
-const int N = 2000;
+const int N = 20;
 const double G = 6.67430e-1f; // scaled gravitational constant
 
 struct Force {
@@ -38,7 +38,7 @@ void UpdateBruteForce(std::vector<Body> &bodies, double dt) {
                 continue;
 
             auto diff = bodies[j].position - bodies[i].position;
-            double r2 = diff.x * diff.x + diff.y * diff.y + 1e-6; // softening
+            double r2 = diff.x * diff.x + diff.y * diff.y + 1e-2; // softening
             double invR = 1.0 / std::sqrt(r2);
             double invR3 = invR * invR * invR;
 
@@ -107,7 +107,7 @@ int main() {
 #endif
 
     while (WindowShouldClose() == false) {
-        UpdateBruteForce(bodies, .01);
+        UpdateBruteForce(bodies, 1);
         BeginDrawing();
         ClearBackground(BLACK);
         for (const Body &b : bodies) {

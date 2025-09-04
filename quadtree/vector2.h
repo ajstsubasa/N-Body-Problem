@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+
 namespace quadtree {
 
 template <typename T> class PVector {
@@ -8,38 +9,102 @@ template <typename T> class PVector {
     T x;
     T y;
 
-    constexpr PVector(T X = 0, T Y = 0) noexcept : x(X), y(Y) {}
+    constexpr PVector() noexcept : x(T(0)), y(T(0)) {}
+    constexpr PVector(T X, T Y) noexcept : x(X), y(Y) {}
 
-    constexpr PVector<T> &operator+=(const PVector<T> &other) noexcept {
+    // Compound vector ops
+    constexpr PVector &operator+=(const PVector &other) noexcept {
         x += other.x;
         y += other.y;
-        return PVector<T>(x, y);
+        return *this;
     }
-
-    constexpr PVector<T> &operator/=(T t) noexcept {
-        x /= t;
-        y /= t;
-        return PVector<T>(x, y);
-    }
-
-    constexpr T norm() noexcept { return std::sqrt(x * x + y * y); }
-
-    constexpr PVector<T> &operator-(const PVector<T> &other) noexcept {
+    constexpr PVector &operator-=(const PVector &other) noexcept {
         x -= other.x;
         y -= other.y;
-        return PVector<T>(x, y);
+        return *this;
     }
+
+    // Compound scalar ops
+    constexpr PVector &operator*=(T s) noexcept {
+        x *= s;
+        y *= s;
+        return *this;
+    }
+    constexpr PVector &operator/=(T s) noexcept {
+        x /= s;
+        y /= s;
+        return *this;
+    }
+
+    // Unary ops
+    constexpr PVector operator+() const noexcept { return *this; }
+    constexpr PVector operator-() const noexcept { return PVector(-x, -y); }
+
+    // Length utilities
+    constexpr T lengthSquared() const noexcept { return x * x + y * y; }
+    T length() const noexcept {
+        using std::sqrt;
+        return sqrt(x * x + y * y);
+    }
+
+    // Normalization
+    PVector normalized() const noexcept {
+        T len = length();
+        if (len == T(0))
+            return PVector(T(0), T(0));
+        return PVector(x / len, y / len);
+    }
+    void normalizeInPlace() noexcept {
+        T len = length();
+        if (len != T(0)) {
+            x /= len;
+            y /= len;
+        }
+    }
+
+    // Backward-compat alias if you previously used norm()
+    T norm() const noexcept { return length(); }
+
+    // Helpers
+    static constexpr PVector zero() noexcept { return PVector(T(0), T(0)); }
+    static constexpr PVector unitX() noexcept { return PVector(T(1), T(0)); }
+    static constexpr PVector unitY() noexcept { return PVector(T(0), T(1)); }
 };
 
+// Free operators (non-mutating)
 template <typename T> constexpr PVector<T> operator+(PVector<T> lhs, const PVector<T> &rhs) noexcept {
     lhs += rhs;
-    return PVector<T>(lhs.x, lhs.y);
+    return lhs;
 }
 
-template <typename T> constexpr PVector<T> operator/(PVector<T> vec, T t) noexcept {
-    vec /= t;
-    return PVector<T>(vec.x, vec.y);
+template <typename T> constexpr PVector<T> operator-(PVector<T> lhs, const PVector<T> &rhs) noexcept {
+    lhs -= rhs;
+    return lhs;
 }
 
-template <typename T> constexpr PVector<T> operator*(PVector<T> vec, T t) noexcept { return PVector<T>(vec.x * t, vec.y * t); }
+template <typename T> constexpr PVector<T> operator*(PVector<T> v, T s) noexcept {
+    v *= s;
+    return v;
+}
+
+template <typename T> constexpr PVector<T> operator*(T s, PVector<T> v) noexcept {
+    v *= s;
+    return v;
+}
+
+template <typename T> constexpr PVector<T> operator/(PVector<T> v, T s) noexcept {
+    v /= s;
+    return v;
+}
+
+// Comparisons
+
+template <typename T> constexpr bool operator==(const PVector<T> &a, const PVector<T> &b) noexcept { return a.x == b.x && a.y == b.y; }
+
+template <typename T> constexpr bool operator!=(const PVector<T> &a, const PVector<T> &b) noexcept { return !(a == b); }
+
+// Dot product
+
+template <typename T> constexpr T dot(const PVector<T> &a, const PVector<T> &b) noexcept { return a.x * b.x + a.y * b.y; }
+
 } // namespace quadtree
